@@ -391,12 +391,17 @@ input[type="file"]:hover {
   left: 12px;
   right: 12px;
   height: 2px;
+  z-index: 4;
+  pointer-events: none;
   border-radius: 999px;
   background: linear-gradient(90deg, transparent, var(--brand-b), transparent);
+  box-shadow: 0 0 14px rgba(14, 165, 233, 0.45);
   animation: scan 2.8s linear infinite;
 }
 
 .scan-card {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 3px;
   border: 1px solid rgba(209, 213, 219, 0.9);
