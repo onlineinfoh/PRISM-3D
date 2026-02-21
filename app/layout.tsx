@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Nav from "./components/Nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PRISM-3D | Periskeletal Region–aware Imaging",
-  description: "Segmentation-guided 3D deep learning for NSCLC survival prediction.",
+  title: "PRISM-3D Demo",
+  description: "Segmentation-guided NSCLC survival demo UI.",
 };
 
 export default function RootLayout({
@@ -13,7 +14,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <div className="bg-layer" />
+        <div className="site-shell">
+          <Nav />
+          <div className="page-wrap">{children}</div>
+        </div>
+      </body>
     </html>
   );
 }
