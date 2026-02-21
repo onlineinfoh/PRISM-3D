@@ -11,6 +11,7 @@
   --brand-b: #0ea5e9;
   --brand-c: #10b981;
   --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+  --jelly-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
   --radius: 18px;
 }
 
@@ -23,6 +24,10 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+}
+
+html {
+  font-size: 123.75%;
 }
 
 body {
@@ -54,24 +59,30 @@ body {
 }
 
 .site-shell {
-  max-width: 1220px;
+  width: min(66vw, calc(100% - 40px));
   margin: 0 auto;
-  padding: 20px clamp(16px, 4vw, 48px) 42px;
+  padding: 20px 0 42px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 .site-nav-wrap {
   position: fixed;
   top: 20px;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 60;
-  max-width: 1220px;
-  margin: 0 auto;
-  padding: 0 clamp(16px, 4vw, 48px);
+  width: min(66vw, calc(100% - 40px));
+  padding: 0;
 }
 
 .page-wrap {
-  margin-top: 118px;
+  padding-top: 118px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .site-nav {
@@ -143,6 +154,12 @@ body {
 .home-page {
   display: grid;
   gap: 22px;
+  min-height: 100%;
+}
+
+.inference-page,
+.about-page {
+  min-height: 100%;
 }
 
 .hero-grid {
@@ -160,6 +177,90 @@ body {
   border-radius: 22px;
   background: var(--card);
   box-shadow: var(--shadow);
+}
+
+.hero-copy,
+.hero-visual,
+.feature-card,
+.about-hero,
+.card,
+.scan-card,
+.progress-wrap,
+.notice,
+.error,
+.viz-panel,
+.team-card,
+input[type="file"] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 24px 20px 26px 18px / 20px 28px 18px 26px;
+  border: 1px solid rgba(209, 213, 219, 0.72);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(248, 252, 255, 0.74) 55%,
+    rgba(238, 247, 252, 0.78)
+  );
+  box-shadow:
+    var(--jelly-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -8px 16px rgba(14, 165, 233, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.hero-copy::before,
+.hero-visual::before,
+.feature-card::before,
+.about-hero::before,
+.card::before,
+.scan-card::before,
+.progress-wrap::before,
+.notice::before,
+.error::before,
+.viz-panel::before,
+.team-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 16% 14%, rgba(255, 255, 255, 0.4), transparent 34%);
+}
+
+.hero-copy > *,
+.hero-visual > *,
+.feature-card > *,
+.about-hero > *,
+.card > *,
+.scan-card > *,
+.progress-wrap > *,
+.notice > *,
+.error > *,
+.viz-panel > *,
+.team-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-copy:hover,
+.hero-visual:hover,
+.feature-card:hover,
+.about-hero:hover,
+.card:hover,
+.scan-card:hover,
+.progress-wrap:hover,
+.notice:hover,
+.error:hover,
+.viz-panel:hover,
+.team-card:hover,
+input[type="file"]:hover {
+  transform: translateY(-1px) scale(1.002);
+  border-color: rgba(14, 165, 233, 0.35);
+  box-shadow:
+    0 20px 42px rgba(15, 23, 42, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -10px 20px rgba(14, 165, 233, 0.08);
 }
 
 .hero-copy,
@@ -258,6 +359,7 @@ body {
   right: -40px;
   background: rgba(15, 118, 110, 0.34);
   animation-delay: 1s;
+  display: none;
 }
 
 .orb-c {
@@ -267,6 +369,7 @@ body {
   left: 58%;
   background: rgba(16, 185, 129, 0.42);
   animation-delay: 0.4s;
+  display: none;
 }
 
 .scan-frame {
@@ -275,11 +378,12 @@ body {
   display: grid;
   gap: 12px;
   height: 100%;
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  border-radius: 16px;
-  padding: 18px;
-  background: rgba(255, 255, 255, 0.76);
-  backdrop-filter: blur(8px);
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .scan-line {
@@ -299,6 +403,10 @@ body {
   border-radius: 12px;
   padding: 12px;
   background: rgba(255, 255, 255, 0.88);
+}
+
+.scan-card::before {
+  content: none;
 }
 
 .scan-card span {
@@ -388,13 +496,12 @@ body {
 
 .research-footnote {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 8px;
   z-index: 58;
-  max-width: 1220px;
-  margin: 0 auto;
-  padding: 0 clamp(16px, 4vw, 48px);
+  width: min(66vw, calc(100% - 40px));
+  padding: 0;
   pointer-events: none;
   opacity: 0.82;
 }
@@ -679,6 +786,81 @@ button:disabled {
   color: var(--muted);
 }
 
+/* Final jelly override so later component-specific rules keep the squishy look. */
+.hero-copy,
+.hero-visual,
+.feature-card,
+.about-hero,
+.card,
+.scan-card,
+.progress-wrap,
+.notice,
+.error,
+.viz-panel,
+.team-card,
+input[type="file"] {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px 20px 26px 18px / 20px 28px 18px 26px;
+  border: 1px solid rgba(209, 213, 219, 0.72);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(248, 252, 255, 0.74) 55%,
+    rgba(238, 247, 252, 0.78)
+  );
+  box-shadow:
+    var(--jelly-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -8px 16px rgba(14, 165, 233, 0.06);
+}
+
+.error {
+  border-color: rgba(248, 113, 113, 0.44);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 243, 243, 0.94),
+    rgba(255, 238, 238, 0.82) 60%,
+    rgba(255, 226, 226, 0.84)
+  );
+}
+
+/* Avoid "jelly inside jelly": keep nested boxes cleaner and flatter. */
+.card .card,
+.card .team-card,
+.card .viz-panel,
+.card .progress-wrap,
+.card .notice,
+.card .error,
+.scan-frame .scan-card {
+  border-radius: 14px;
+  border: 1px solid rgba(209, 213, 219, 0.78);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: none;
+}
+
+.card .card::before,
+.card .team-card::before,
+.card .viz-panel::before,
+.card .progress-wrap::before,
+.card .notice::before,
+.card .error::before,
+.scan-frame .scan-card::before {
+  content: none;
+}
+
+.card .card:hover,
+.card .team-card:hover,
+.card .viz-panel:hover,
+.card .progress-wrap:hover,
+.card .notice:hover,
+.card .error:hover,
+.scan-frame .scan-card:hover {
+  transform: none;
+  border-color: rgba(209, 213, 219, 0.78);
+  box-shadow: none;
+}
+
 @keyframes drift {
   0%,
   100% {
@@ -706,13 +888,25 @@ button:disabled {
 }
 
 @media (max-width: 980px) {
+  .site-shell {
+    width: calc(100% - 24px);
+  }
+
+  .site-nav-wrap {
+    width: calc(100% - 24px);
+  }
+
+  .research-footnote {
+    width: calc(100% - 24px);
+  }
+
   .site-nav {
     flex-direction: column;
     align-items: flex-start;
   }
 
   .page-wrap {
-    margin-top: 148px;
+    padding-top: 148px;
   }
 
   .hero-grid,
