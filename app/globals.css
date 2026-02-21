@@ -861,6 +861,26 @@ input[type="file"] {
   box-shadow: none;
 }
 
+/* Keep right panel clean: remove decorative orbs in hero visual. */
+.hero-visual .orb {
+  display: none !important;
+}
+
+/* Keep jelly crisp: disable texture overlays so text stays sharp. */
+.hero-copy::before,
+.hero-visual::before,
+.feature-card::before,
+.about-hero::before,
+.card::before,
+.scan-card::before,
+.progress-wrap::before,
+.notice::before,
+.error::before,
+.viz-panel::before,
+.team-card::before {
+  content: none !important;
+}
+
 @keyframes drift {
   0%,
   100% {
