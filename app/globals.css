@@ -90,7 +90,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border: 1px solid rgba(209, 213, 219, 0.8);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.72);
@@ -265,7 +265,7 @@ input[type="file"]:hover {
 
 .hero-copy,
 .about-hero {
-  padding: clamp(20px, 4vw, 34px);
+  padding: clamp(14px, 2.8vw, 24px);
 }
 
 .eyebrow {
@@ -332,8 +332,8 @@ input[type="file"]:hover {
 .hero-visual {
   position: relative;
   overflow: hidden;
-  padding: 22px;
-  min-height: 370px;
+  padding: 14px;
+  min-height: 300px;
 }
 
 .orb {
@@ -376,7 +376,7 @@ input[type="file"]:hover {
   position: relative;
   z-index: 2;
   display: grid;
-  gap: 12px;
+  gap: 9px;
   height: 100%;
   border: none;
   border-radius: 0;
@@ -401,7 +401,7 @@ input[type="file"]:hover {
   gap: 3px;
   border: 1px solid rgba(209, 213, 219, 0.9);
   border-radius: 12px;
-  padding: 12px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.88);
 }
 
@@ -423,11 +423,11 @@ input[type="file"]:hover {
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 }
 
 .feature-card {
-  padding: 20px;
+  padding: 14px;
 }
 
 .feature-card h2 {
@@ -527,7 +527,7 @@ input[type="file"]:hover {
 .layout {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .span-12 {
@@ -551,7 +551,7 @@ input[type="file"]:hover {
   border-radius: var(--radius);
   background: var(--card);
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 14px;
 }
 
 .card h2,
@@ -616,7 +616,7 @@ button:disabled {
   margin-top: 10px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 12px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.86);
 }
 
@@ -668,7 +668,7 @@ button:disabled {
   margin-top: 10px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 11px;
+  padding: 9px;
   background: rgba(255, 255, 255, 0.9);
   color: var(--muted);
   font-size: 0.9rem;
@@ -678,7 +678,7 @@ button:disabled {
   margin-top: 10px;
   border: 1px solid #fecaca;
   border-radius: 10px;
-  padding: 11px;
+  padding: 9px;
   background: #fef2f2;
   color: #b91c1c;
   font-size: 0.9rem;
@@ -711,13 +711,13 @@ button:disabled {
   margin-top: 12px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .viz-panel {
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 10px;
+  padding: 8px;
   background: #fff;
 }
 
@@ -746,13 +746,13 @@ button:disabled {
   margin-top: 6px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .team-card {
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 12px;
+  padding: 10px;
   background: #fff;
 }
 
