@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INFERENCE_ENABLED = Boolean(API_URL);
 
 type ViewImages = {
   segmentation: string;
@@ -56,6 +57,10 @@ export default function Home() {
 
     if (!ctFile) {
       setError("Please upload a CT volume (.nii.gz).");
+      return;
+    }
+    if (!INFERENCE_ENABLED) {
+      setError("Frontend-only mode: backend inference API is not configured.");
       return;
     }
 
@@ -183,8 +188,17 @@ export default function Home() {
               />
             </div>
             <button type="submit" disabled={loading}>
-              {loading ? "Running inference..." : "Run PRISM-3D"}
+              {loading
+                ? "Running inference..."
+                : INFERENCE_ENABLED
+                  ? "Run PRISM-3D"
+                  : "Inference unavailable (frontend-only)"}
             </button>
+            {!INFERENCE_ENABLED ? (
+              <div className="notice">
+                Backend is not connected in this deployment. UI preview is available.
+              </div>
+            ) : null}
           </form>
 
           {loading ? (
