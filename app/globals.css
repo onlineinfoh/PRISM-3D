@@ -59,7 +59,7 @@ body {
 }
 
 .site-shell {
-  width: min(66vw, calc(100% - 40px));
+  width: min(79.2vw, calc(100% - 40px));
   margin: 0 auto;
   padding: 20px 0 42px;
   min-height: 100dvh;
@@ -73,7 +73,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 60;
-  width: min(66vw, calc(100% - 40px));
+  width: min(79.2vw, calc(100% - 40px));
   padding: 0;
 }
 
@@ -500,7 +500,7 @@ input[type="file"]:hover {
   transform: translateX(-50%);
   bottom: 8px;
   z-index: 58;
-  width: min(66vw, calc(100% - 40px));
+  width: min(79.2vw, calc(100% - 40px));
   padding: 0;
   pointer-events: none;
   opacity: 0.82;
