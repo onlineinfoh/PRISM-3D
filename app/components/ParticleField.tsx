@@ -1,0 +1,200 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+type Particle = {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+  seed: number;
+};
+
+export default function ParticleField() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let frame = 0;
+    const pointer = { x: 0, y: 0, active: false };
+    let particles: Particle[] = [];
+
+    const particleCount = () => {
+      const area = width * height;
+      return Math.max(40, Math.min(110, Math.floor(area / 18000)));
+    };
+
+    const resetParticles = () => {
+      const count = particleCount();
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: 1 + Math.random() * 1.8,
+        seed: Math.random() * Math.PI * 2,
+      }));
+    };
+
+    const resize = () => {
+      dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      resetParticles();
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+      pointer.active = true;
+    };
+
+    const onPointerLeave = () => {
+      pointer.active = false;
+    };
+
+    const step = () => {
+      // Slight persistence creates flow trails instead of static-looking points.
+      ctx.fillStyle = "rgba(248, 250, 252, 0.23)";
+      ctx.fillRect(0, 0, width, height);
+
+      const linkDist = 86;
+      const linkDistSq = linkDist * linkDist;
+      const collisionDist = 20;
+      const collisionDistSq = collisionDist * collisionDist;
+      const t = frame * 0.012;
+
+      for (let i = 0; i < particles.length; i += 1) {
+        const a = particles[i];
+
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const b = particles[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq <= 0.0001) continue;
+          if (distSq < linkDistSq) {
+            const dist = Math.sqrt(distSq);
+            const fade = 1 - dist / linkDist;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(14, 165, 233, ${0.1 * fade})`;
+            ctx.lineWidth = 1;
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+
+          if (distSq < collisionDistSq) {
+            const dist = Math.sqrt(distSq);
+            const nx = dx / (dist || 1);
+            const ny = dy / (dist || 1);
+            const push = (collisionDist - dist) * 0.0046;
+            a.vx -= nx * push;
+            a.vy -= ny * push;
+            b.vx += nx * push;
+            b.vy += ny * push;
+          }
+        }
+
+        if (pointer.active) {
+          const pdx = a.x - pointer.x;
+          const pdy = a.y - pointer.y;
+          const pDistSq = pdx * pdx + pdy * pdy;
+          const pRadius = 170;
+          if (pDistSq < pRadius * pRadius) {
+            const pDist = Math.sqrt(pDistSq) || 1;
+            const pnX = pdx / pDist;
+            const pnY = pdy / pDist;
+            const repel = (1 - pDist / pRadius) * 0.06;
+            a.vx += pnX * repel;
+            a.vy += pnY * repel;
+          }
+        }
+
+        // Dynamic curl-like flow field: keeps particles moving in streaming paths.
+        const flowX =
+          Math.sin(a.y * 0.006 + t * 1.1 + a.seed) -
+          Math.cos(a.x * 0.004 - t * 0.9 - a.seed * 0.6);
+        const flowY =
+          Math.cos(a.x * 0.006 + t * 1.0 + a.seed * 0.8) +
+          Math.sin(a.y * 0.004 - t * 0.95 - a.seed);
+        const jitter = Math.sin(t * 2.2 + a.seed * 3.1) * 0.0018;
+        a.vx += flowX * 0.0043 + 0.01 + jitter;
+        a.vy += flowY * 0.0043 + jitter * 0.6;
+
+        // Keep particles in motion so they do not stall and clump.
+        a.vx *= 0.986;
+        a.vy *= 0.986;
+        const speed = Math.hypot(a.vx, a.vy);
+        const minSpeed = 0.25;
+        const maxSpeed = 1.35;
+        if (speed < minSpeed) {
+          const ang = Math.atan2(a.vy, a.vx) + 0.35;
+          a.vx = Math.cos(ang) * minSpeed;
+          a.vy = Math.sin(ang) * minSpeed;
+        } else if (speed > maxSpeed) {
+          const s = maxSpeed / speed;
+          a.vx *= s;
+          a.vy *= s;
+        }
+
+        a.x += a.vx;
+        a.y += a.vy;
+
+        // Wrap at edges to preserve continuous flow.
+        if (a.x < -8) a.x = width + 8;
+        else if (a.x > width + 8) a.x = -8;
+        if (a.y < -8) a.y = height + 8;
+        else if (a.y > height + 8) a.y = -8;
+
+        const pulse = 0.45 + 0.35 * Math.sin((frame + i * 17) * 0.02);
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(15, 118, 110, ${0.35 + pulse * 0.3})`;
+        ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      frame += 1;
+      animation = window.requestAnimationFrame(step);
+    };
+
+    let animation = 0;
+    resize();
+    if (!reduceMotion) {
+      animation = window.requestAnimationFrame(step);
+    } else {
+      // Draw one static frame for users requesting reduced motion.
+      step();
+      window.cancelAnimationFrame(animation);
+    }
+
+    window.addEventListener("resize", resize);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerleave", onPointerLeave);
+
+    return () => {
+      window.cancelAnimationFrame(animation);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerleave", onPointerLeave);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="particle-field" aria-hidden="true" />;
+}

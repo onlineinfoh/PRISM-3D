@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Nav from "./components/Nav";
+import ParticleField from "./components/ParticleField";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,8 +17,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <div className="bg-layer" />
+        <ParticleField />
         <div className="site-shell">
-          <Nav />
+          <div className="site-nav-wrap">
+            <Nav />
+          </div>
           <div className="page-wrap">{children}</div>
         </div>
       </body>
