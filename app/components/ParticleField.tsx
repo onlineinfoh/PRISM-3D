@@ -79,6 +79,20 @@ export default function ParticleField() {
       const collisionDistSq = collisionDist * collisionDist;
       const t = frame * 0.012;
 
+      // Periodic low-rate reseed prevents long-term lane collapse/banding.
+      if (frame > 0 && frame % 240 === 0) {
+        const reseedCount = Math.max(1, Math.floor(particles.length * 0.04));
+        for (let r = 0; r < reseedCount; r += 1) {
+          const idx = Math.floor(Math.random() * particles.length);
+          const p = particles[idx];
+          p.x = Math.random() * width;
+          p.y = Math.random() * height;
+          p.vx = (Math.random() - 0.5) * 0.6;
+          p.vy = (Math.random() - 0.5) * 0.6;
+          p.seed = Math.random() * Math.PI * 2;
+        }
+      }
+
       for (let i = 0; i < particles.length; i += 1) {
         const a = particles[i];
 
@@ -127,16 +141,19 @@ export default function ParticleField() {
           }
         }
 
-        // Dynamic curl-like flow field: keeps particles moving in streaming paths.
+        // Curl-dominant flow keeps motion dynamic without collapsing into a narrow band.
         const flowX =
-          Math.sin(a.y * 0.006 + t * 1.1 + a.seed) -
-          Math.cos(a.x * 0.004 - t * 0.9 - a.seed * 0.6);
+          Math.sin(a.y * 0.007 + t * 0.9 + a.seed) * 0.9 +
+          Math.sin((a.y + a.x) * 0.003 - t * 0.6) * 0.35;
         const flowY =
-          Math.cos(a.x * 0.006 + t * 1.0 + a.seed * 0.8) +
-          Math.sin(a.y * 0.004 - t * 0.95 - a.seed);
-        const jitter = Math.sin(t * 2.2 + a.seed * 3.1) * 0.0018;
-        a.vx += flowX * 0.0043 + 0.01 + jitter;
-        a.vy += flowY * 0.0043 + jitter * 0.6;
+          -Math.sin(a.x * 0.007 - t * 0.85 - a.seed * 0.7) * 0.9 +
+          Math.sin((a.x - a.y) * 0.003 + t * 0.5) * 0.35;
+        const jitterX = Math.sin(t * 2.1 + a.seed * 2.9) * 0.0016;
+        const jitterY = Math.cos(t * 1.9 + a.seed * 3.3) * 0.0016;
+        const breezeX = Math.cos(t * 0.13 + a.seed) * 0.0009;
+        const breezeY = Math.sin(t * 0.11 + a.seed * 1.2) * 0.0009;
+        a.vx += flowX * 0.0042 + jitterX + breezeX;
+        a.vy += flowY * 0.0042 + jitterY + breezeY;
 
         // Keep particles in motion so they do not stall and clump.
         a.vx *= 0.986;
