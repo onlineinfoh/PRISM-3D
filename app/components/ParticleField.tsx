@@ -31,7 +31,7 @@ export default function ParticleField() {
 
     const particleCount = () => {
       const area = width * height;
-      return Math.max(40, Math.min(110, Math.floor(area / 18000)));
+      return Math.max(70, Math.min(220, Math.floor(area / 10000)));
     };
 
     const resetParticles = () => {
@@ -41,7 +41,7 @@ export default function ParticleField() {
         y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.35,
         vy: (Math.random() - 0.5) * 0.35,
-        r: 1 + Math.random() * 1.8,
+        r: 0.9 + Math.random() * 1.5,
         seed: Math.random() * Math.PI * 2,
       }));
     };
@@ -73,7 +73,7 @@ export default function ParticleField() {
       ctx.fillStyle = "rgba(248, 250, 252, 0.23)";
       ctx.fillRect(0, 0, width, height);
 
-      const linkDist = 86;
+      const linkDist = 98;
       const linkDistSq = linkDist * linkDist;
       const collisionDist = 20;
       const collisionDistSq = collisionDist * collisionDist;
